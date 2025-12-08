@@ -65,6 +65,7 @@
       </div>
     </section>
 
+
     <!-- PROJECTS -->
     <section id="projects" class="mb-16">
       <div class="flex items-center justify-between mb-6">
@@ -112,6 +113,75 @@
       </div>
     </section>
 
+
+
+       <!-- LANDSCAPE CAROUSEL -->
+<section id="landscape" class="mb-16">
+  <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-4 mb-6">
+    <div>
+      <p class="text-xs font-semibold tracking-[0.2em] uppercase text-indigo-600">Templates & Covers</p>
+      <p class="text-slate-600 mt-2 max-w-2xl text-sm">Slides through your horizontal graphics — perfect for thumbnails, video covers, and multi-slide campaigns.</p>
+    </div>
+    <div class="flex gap-2 text-xs text-slate-500">
+      <span>Landscape • 1920 x 1080</span>
+      <span class="hidden md:inline">Autoplay enabled</span>
+    </div>
+  </div>
+
+  <div class="relative">
+    <div class="overflow-hidden rounded-2xl border bg-white shadow-sm">
+      <div id="landscapeTrack" class="flex transition-transform duration-500 ease-out">
+        <article class="min-w-full">
+          <img src="images/covers.png" alt="Landscape template cover" class="w-full aspect-[16/9] object-cover" loading="lazy" />
+          <div class="p-4 flex items-center justify-between text-sm">
+            <div>
+              <div class="font-semibold">Covers</div>
+              <p class="text-slate-500 text-xs mt-1">Canva</p>
+            </div>
+            <span class="uppercase tracking-wide text-xs text-slate-400">Covers</span>
+          </div>
+        </article>
+        <article class="min-w-full">
+          <img src="images/covers2.png" alt="Landscape thumbnails" class="w-full aspect-[16/9] object-cover" loading="lazy" />
+          <div class="p-4 flex items-center justify-between text-sm">
+            <div>
+              <div class="font-semibold">Covers</div>
+              <p class="text-slate-500 text-xs mt-1">LinkedIn Covers</p>
+            </div>
+            <span class="uppercase tracking-wide text-xs text-slate-400">Thumbnails</span>
+          </div>
+        </article>
+        <article class="min-w-full">
+          <img src="images/covers3.png" alt="Graphics template" class="w-full aspect-[16/9] object-cover" loading="lazy" />
+          <div class="p-4 flex items-center justify-between text-sm">
+            <div>
+              <div class="font-semibold">Graphics Pack</div>
+              <p class="text-slate-500 text-xs mt-1">Modular assets ready for carousels and highlight reels.</p>
+            </div>
+            <span class="uppercase tracking-wide text-xs text-slate-400">Templates</span>
+          </div>
+        </article>
+      </div>
+    </div>
+
+    <button id="landscapePrev" class="absolute left-3 top-1/2 -translate-y-1/2 bg-white/80 backdrop-blur rounded-full border shadow p-3" aria-label="Previous landscape slide">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
+      </svg>
+    </button>
+    <button id="landscapeNext" class="absolute right-3 top-1/2 -translate-y-1/2 bg-white/80 backdrop-blur rounded-full border shadow p-3" aria-label="Next landscape slide">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
+      </svg>
+    </button>
+
+    <div class="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2">
+      <button class="landscape-dot w-3 h-3 rounded-full border border-white/70 bg-white/40 transition" data-index="0" aria-label="Show slide 1"></button>
+      <button class="landscape-dot w-3 h-3 rounded-full border border-white/70 bg-white/40 transition" data-index="1" aria-label="Show slide 2"></button>
+      <button class="landscape-dot w-3 h-3 rounded-full border border-white/70 bg-white/40 transition" data-index="2" aria-label="Show slide 3"></button>
+    </div>
+  </div>
+</section>
 
     <!-- PORTRAIT SLIDESHOW 9:16 WITH GENERAL DESCRIPTION -->
     <div class="relative w-full max-w-xs mx-auto aspect-[9/16] rounded-2xl overflow-hidden shadow-lg" id="slideshow">
@@ -218,6 +288,67 @@
   }
 
   setInterval(showNextSlide, 3000); // Change every 3 seconds
+
+  // Landscape carousel logic
+  const landscapeTrack = document.getElementById('landscapeTrack');
+  const landscapeDots = document.querySelectorAll('.landscape-dot');
+  const landscapePrev = document.getElementById('landscapePrev');
+  const landscapeNext = document.getElementById('landscapeNext');
+  const landscapeSlidesCount = landscapeTrack ? landscapeTrack.children.length : 0;
+  let landscapeIndex = 0;
+  let landscapeTimer;
+
+  function updateLandscapeCarousel() {
+    if (!landscapeTrack) return;
+    landscapeTrack.style.transform = `translateX(-${landscapeIndex * 100}%)`;
+    landscapeDots.forEach((dot, dotIndex) => {
+      const isActive = dotIndex === landscapeIndex;
+      dot.classList.toggle('bg-indigo-600', isActive);
+      dot.classList.toggle('border-indigo-600', isActive);
+      dot.classList.toggle('bg-white/40', !isActive);
+      dot.classList.toggle('border-white/70', !isActive);
+    });
+  }
+
+  function goToLandscapeSlide(targetIndex) {
+    if (!landscapeSlidesCount) return;
+    landscapeIndex = (targetIndex + landscapeSlidesCount) % landscapeSlidesCount;
+    updateLandscapeCarousel();
+  }
+
+  function startLandscapeAuto() {
+    if (landscapeSlidesCount <= 1) return;
+    landscapeTimer = setInterval(() => {
+      goToLandscapeSlide(landscapeIndex + 1);
+    }, 5000);
+  }
+
+  function restartLandscapeAuto() {
+    if (landscapeTimer) clearInterval(landscapeTimer);
+    startLandscapeAuto();
+  }
+
+  landscapePrev?.addEventListener('click', () => {
+    goToLandscapeSlide(landscapeIndex - 1);
+    restartLandscapeAuto();
+  });
+
+  landscapeNext?.addEventListener('click', () => {
+    goToLandscapeSlide(landscapeIndex + 1);
+    restartLandscapeAuto();
+  });
+
+  landscapeDots.forEach(dot => {
+    dot.addEventListener('click', () => {
+      const target = Number(dot.dataset.index);
+      if (Number.isNaN(target)) return;
+      goToLandscapeSlide(target);
+      restartLandscapeAuto();
+    });
+  });
+
+  updateLandscapeCarousel();
+  startLandscapeAuto();
 </script>
 
 </body>
